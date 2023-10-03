@@ -8,6 +8,8 @@
 //  clients can execute, along with the return type for each.
 //  Ex: The "games" query returns an array of zero or more games.
 
+//Input: Istead of type which says to graphql that this isn't an actual type of data but more of a collection of fields that we can use in a mutation
+
 export const typeDefs = `#graphql
   type Game {
     id: ID!
@@ -35,5 +37,18 @@ export const typeDefs = `#graphql
     review(id: ID!): Review
     authors: [Author]
     author(id: ID!): Author
+  }
+  type Mutation {
+    addGame(game: AddGameInput!): Game
+    deleteGame(id: ID!): [Game]
+    updateGame(id: ID!, edits: UpdateGameInput): Game
+  }
+  input AddGameInput {
+    title: String!,
+    platform: [String!]!
+  }
+  input UpdateGameInput {
+    title: String,
+    platform: [String!]
   }
 `;

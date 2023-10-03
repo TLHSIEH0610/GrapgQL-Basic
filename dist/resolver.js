@@ -2,6 +2,7 @@ import db from "./_db.js";
 // Resolvers define how to fetch the types defined in your schema.
 // This resolver retrieves games from the "games" array.
 export const resolvers = {
+    //query
     Query: {
         games() {
             return db.games;
@@ -22,6 +23,7 @@ export const resolvers = {
             return db.reviews.find((review) => review.id === args.id);
         },
     },
+    //add related data
     Game: {
         reviews(parent) {
             return db.reviews.filter((r) => r.game_id === parent.id);
@@ -38,6 +40,30 @@ export const resolvers = {
     Author: {
         reviews(parent) {
             return db.reviews.filter((r) => r.author_id === parent.id);
+        },
+    },
+    //update, delete, add
+    Mutation: {
+        addGame(_, args) {
+            let game = {
+                ...args.game,
+                id: Math.floor(Math.random() * 10000).toString(),
+            };
+            db.games.push(game);
+            return game;
+        },
+        deleteGame(_, args) {
+            db.games = db.games.filter((g) => g.id !== args.id);
+            return db.games;
+        },
+        updateGame(_, args) {
+            db.games = db.games.map((g) => {
+                if (g.id === args.id) {
+                    return { ...g, ...args.edits };
+                }
+                return g;
+            });
+            return db.games.find((g) => g.id === args.id);
         },
     },
 };
